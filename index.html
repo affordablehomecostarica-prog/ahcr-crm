@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Affordable Home Costa Rica — CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --gd:#1E4008;--gm:#2E5E0E;--gl:#E8F2DC;--gc:#BDDDA0;
+    --go:#B06A10;--gol:#FAF0E0;--gom:#D4870A;
+    --bg:#F7F5F0;--card:#FFFFFF;--border:#E2DDD5;
+    --text:#1A1A18;--sub:#6B6860;--muted:#A8A49E;
+    --info:#1D5FA3;--info-bg:#EBF3FC;
+    --danger:#B02020;--danger-bg:#FBF0F0;
+    --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+    --shadow-lg:0 4px 24px rgba(0,0,0,.12);
+    --radius:10px;--radius-sm:6px;--radius-lg:14px;
+  }
+  html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+  
+  /* LAYOUT */
+  .layout{display:flex;height:100vh;overflow:hidden}
+  .sidebar{width:220px;background:var(--gd);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+  .topbar{background:var(--card);border-bottom:1px solid var(--border);padding:.875rem 1.5rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+  .content{flex:1;overflow-y:auto;padding:1.5rem}
+
+  /* SIDEBAR */
+  .sidebar-logo{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,.1)}
+  .sidebar-logo-tag{font-size:9px;font-weight:600;letter-spacing:2px;color:var(--gom);text-transform:uppercase;margin-bottom:4px}
+  .sidebar-logo-name{font-family:'Playfair Display',serif;font-size:15px;color:#fff;line-height:1.3}
+  .sidebar-logo-sub{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+  .sidebar-nav{flex:1;padding:.75rem .625rem;display:flex;flex-direction:column;gap:2px}
+  .nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--radius-sm);color:rgba(255,255,255,.6);cursor:pointer;font-size:13px;font-weight:400;transition:all .15s;border:none;background:none;width:100%;text-align:left}
+  .nav-item:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
+  .nav-item.active{background:rgba(255,255,255,.14);color:#fff;font-weight:500}
+  .nav-item i{font-size:17px;flex-shrink:0}
+  .nav-item .badge{margin-left:auto;background:rgba(255,255,255,.15);color:rgba(255,255,255,.8);font-size:10px;padding:1px 6px;border-radius:10px}
+  .sidebar-footer{padding:.875rem 1.25rem;border-top:1px solid rgba(255,255,255,.1)}
+  .sidebar-footer-btn{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;background:none;border:none;width:100%;padding:4px 0}
+  .sidebar-footer-btn:hover{color:rgba(255,255,255,.8)}
+
+  /* TOPBAR */
+  .topbar-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:500;color:var(--text)}
+  .topbar-actions{display:flex;gap:8px;align-items:center}
+  .sync-status{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:5px}
+  .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--gm)}
+  .sync-dot.syncing{background:var(--gom);animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+  /* BUTTONS */
+  .btn{font-size:13px;padding:7px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;white-space:nowrap}
+  .btn:hover{background:var(--bg);border-color:var(--muted)}
+  .btn-primary{background:var(--gd);color:#fff;border-color:var(--gd)}
+  .btn-primary:hover{background:var(--gm);border-color:var(--gm)}
+  .btn-sm{font-size:12px;padding:5px 10px}
+  .btn-icon{padding:6px;border-radius:var(--radius-sm)}
+  .btn-danger{color:var(--danger);border-color:transparent;background:transparent}
+  .btn-danger:hover{background:var(--danger-bg);border-color:var(--danger)}
+  .btn-ext{background:#1a73e8;color:#fff;border-color:#1a73e8}
+  .btn-ext:hover{background:#1558b0;border-color:#1558b0}
+
+  /* CARDS & STATS */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem}
+  .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.125rem;box-shadow:var(--shadow)}
+  .stat-label{font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+  .stat-value{font-size:28px;font-weight:300;color:var(--text);line-height:1}
+  .stat-sub{font-size:11px;color:var(--muted);margin-top:4px}
+  .stat-card.accent{background:var(--gd);border-color:var(--gd)}
+  .stat-card.accent .stat-label{color:rgba(255,255,255,.55)}
+  .stat-card.accent .stat-value{color:#fff}
+  .stat-card.accent .stat-sub{color:rgba(255,255,255,.45)}
+
+  /* SECTION */
+  .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:8px}
+  .section-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:500;color:var(--text)}
+  .section-count{font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:400;margin-left:6px}
+
+  /* TABLE */
+  .table-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+  .table-wrap{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg);white-space:nowrap}
+  td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+  tr:last-child td{border-bottom:none}
+  tr:hover td{background:#FAFAF7}
+  .cell-primary{font-weight:500}
+  .cell-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+  /* BADGES */
+  .badge{display:inline-flex;align-items:center;font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .badge-green{background:var(--gl);color:var(--gm)}
+  .badge-gold{background:var(--gol);color:var(--go)}
+  .badge-blue{background:var(--info-bg);color:var(--info)}
+  .badge-red{background:var(--danger-bg);color:var(--danger)}
+  .badge-gray{background:#F0EDE8;color:var(--sub)}
+
+  /* SEARCH */
+  .search-wrap{position:relative;flex:1;max-width:320px}
+  .search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--muted);pointer-events:none}
+  .search-wrap input{width:100%;font-size:13px;padding:7px 10px 7px 32px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif}
+  .search-wrap input:focus{outline:none;border-color:var(--gm)}
+
+  /* MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;backdrop-filter:blur(2px)}
+  .modal{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:slideUp .2s ease}
+  @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .modal-header h2{font-family:'Playfair Display',serif;font-size:17px;font-weight:500}
+  .modal-body{padding:1.5rem}
+  .modal-footer{padding:1rem 1.5rem;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;background:var(--bg);border-radius:0 0 var(--radius-lg) var(--radius-lg)}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .form-group{display:flex;flex-direction:column;gap:5px}
+  .form-group.full{grid-column:1/-1}
+  .form-group label{font-size:12px;font-weight:500;color:var(--sub)}
+  .form-group input,.form-group select,.form-group textarea{font-size:13px;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);color:var(--text);font-family:'DM Sans',sans-serif;transition:border-color .15s}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--gm)}
+  .form-group textarea{min-height:70px;resize:vertical}
+
+  /* PIPELINE BOARD */
+  .pipeline-board{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:1.5rem;min-width:700px}
+  .pipeline-board-wrap{overflow-x:auto;margin-bottom:1.5rem}
+  .pcol{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem;min-height:80px}
+  .pcol-header{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+  .pcol-count{background:var(--card);border:1px solid var(--border);font-size:10px;padding:0 5px;border-radius:10px;color:var(--sub)}
+  .pcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.625rem;margin-bottom:6px;font-size:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .pcard-name{font-weight:500;font-size:12px;color:var(--text);margin-bottom:2px}
+  .pcard-sub{color:var(--muted);font-size:11px}
+
+  /* DASHBOARD CARDS */
+  .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .dash-section-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:.75rem;display:flex;align-items:center;gap:6px}
+  .dash-section-title i{font-size:15px}
+  .event-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:.875rem 1rem;margin-bottom:8px;box-shadow:var(--shadow);display:flex;align-items:flex-start;gap:12px}
+  .event-card-dot{width:8px;height:8px;border-radius:50%;background:var(--gm);flex-shrink:0;margin-top:5px}
+  .event-card-dot.gold{background:var(--gom)}
+  .event-card-name{font-weight:500;font-size:13px;color:var(--text);margin-bottom:2px}
+  .event-card-sub{font-size:12px;color:var(--sub)}
+
+  /* LOADING */
+  .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--sub);font-size:13px}
+  .spinner{width:28px;height:28px;border:2.5px solid var(--border);border-top-color:var(--gd);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* TOAST */
+  .toast-container{position:fixed;bottom:24px;right:24px;z-index:2000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+  .toast{background:var(--gd);color:#fff;font-size:13px;padding:10px 16px;border-radius:var(--radius-sm);box-shadow:var(--shadow-lg);opacity:0;transform:translateY(8px);transition:all .25s;display:flex;align-items:center;gap:8px}
+  .toast.show{opacity:1;transform:translateY(0)}
+  .toast i{font-size:15px}
+
+  /* EMPTY STATE */
+  .empty{text-align:center;padding:3rem 1rem;color:var(--muted)}
+  .empty i{font-size:36px;color:var(--border);display:block;margin-bottom:10px}
+  .empty-title{font-size:14px;font-weight:500;color:var(--sub);margin-bottom:4px}
+
+  /* ACTION ROW */
+  .actions{display:flex;gap:4px}
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    .sidebar{width:60px}
+    .sidebar-logo-name,.sidebar-logo-tag,.sidebar-logo-sub{display:none}
+    .nav-item span{display:none}
+    .nav-item .badge{display:none}
+    .nav-item{justify-content:center;padding:10px}
+    .sidebar-footer-btn span{display:none}
+    .sidebar-logo{padding:.875rem .5rem}
+    .dash-grid{grid-template-columns:1fr}
+    .stats-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-tag">Pura Vida</div>
+      <div class="sidebar-logo-name">Affordable Home<br>Costa Rica</div>
+      <div class="sidebar-logo-sub">CRM Platform</div>
+    </div>
+    <nav class="sidebar-nav" id="sidenav">
+      <button class="nav-item active" onclick="switchTab('dashboard')" id="nav-dashboard"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></button>
+      <button class="nav-item" onclick="switchTab('contacts')" id="nav-contacts"><i class="ti ti-users"></i><span>Contacts</span><span class="badge" id="badge-contacts">0</span></button>
+      <button class="nav-item" onclick="switchTab('listings')" id="nav-listings"><i class="ti ti-home"></i><span>Listings</span><span class="badge" id="badge-listings">0</span></button>
+      <button class="nav-item" onclick="switchTab('deals')" id="nav-deals"><i class="ti ti-file-text"></i><span>Deals</span><span class="badge" id="badge-deals">0</span></button>
+      <button class="nav-item" onclick="switchTab('travel')" id="nav-travel"><i class="ti ti-plane"></i><span>Travel</span></button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="sidebar-footer-btn" onclick="openSheet()"><i class="ti ti-table"></i><span>Open Google Sheet</span></button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-actions">
+        <div class="sync-status"><div class="sync-dot" id="sync-dot"></div><span id="sync-text">Connected</span></div>
+        <button class="btn btn-sm" onclick="loadAll()"><i class="ti ti-refresh"></i> Refresh</button>
+      </div>
+    </div>
+    <div class="content" id="content">
+      <div class="loading-screen"><div class="spinner"></div>Connecting to Google Sheets...</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONTAINER -->
+<div id="modal-container"></div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbz8QXftBsCHeubwEi1IFEh6qp7OuyQUk8Ub-O6NGoZ-lN5UPNNIjdioPnMMX-y_zVzN/exec';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1PLQC9gGnvWoKOLjHJJqjH7KzotPjk-uWtH-6IHT5kpo/edit';
+
+let cache = {contacts:[],listings:[],deals:[],travel:[]};
+let currentTab = 'dashboard';
+let searchQ = '';
+
+function openSheet(){ window.open(SHEET_URL,'_blank'); }
+
+function toast(msg, type='success'){
+  const tc = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<i class="ti ti-${type==='error'?'alert-circle':type==='info'?'info-circle':'circle-check'}"></i>${msg}`;
+  tc.appendChild(t);
+  requestAnimationFrame(()=>{ requestAnimationFrame(()=>t.classList.add('show')); });
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),300); }, 3000);
+}
+
+function setSyncing(v){
+  const dot=document.getElementById('sync-dot');
+  const txt=document.getElementById('sync-text');
+  dot.className='sync-dot'+(v?' syncing':'');
+  txt.textContent=v?'Syncing...':'Connected';
+}
+
+async function apiFetch(params){
+  const url=API+'?'+new URLSearchParams(params);
+  const r=await fetch(url);
+  const j=await r.json();
+  if(j.error) throw new Error(j.error);
+  return j;
+}
+
+async function apiPost(body){
+  const r=await fetch(API,{method:'POST',body:JSON.stringify(body)});
+  const j=await r.json();
+  if(j.error) throw new Error(j.error);
+  return j;
+}
+
+async function loadAll(){
+  setSyncing(true);
+  try {
+    await apiFetch({action:'init'});
+    const [c,l,d,t]=await Promise.all([
+      apiFetch({action:'read',sheet:'contacts'}),
+      apiFetch({action:'read',sheet:'listings'}),
+      apiFetch({action:'read',sheet:'deals'}),
+      apiFetch({action:'read',sheet:'travel'})
+    ]);
+    cache.contacts=c.rows||[];
+    cache.listings=l.rows||[];
+    cache.deals=d.rows||[];
+    cache.travel=t.rows||[];
+    updateBadges();
+    toast('Synced with Google Sheets');
+  } catch(e){ toast('Sync error: '+e.message,'error'); }
+  setSyncing(false);
+  render();
+}
+
+function updateBadges(){
+  document.getElementById('badge-contacts').textContent=cache.contacts.length;
+  document.getElementById('badge-listings').textContent=cache.listings.length;
+  document.getElementById('badge-deals').textContent=cache.deals.length;
+}
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,5); }
+function esc(v){ return (v||'').toString().replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+const TAB_TITLES = {dashboard:'Dashboard',contacts:'Contacts',listings:'Listings',deals:'Deals & Pipeline',travel:'Travel & Showings'};
+
+function switchTab(tab){
+  currentTab=tab; searchQ='';
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  document.getElementById('nav-'+tab).classList.add('active');
+  document.getElementById('topbar-title').textContent=TAB_TITLES[tab];
+  render();
+}
+
+function render(){
+  const el=document.getElementById('content');
+  if(currentTab==='dashboard') el.innerHTML=renderDashboard();
+  else if(currentTab==='contacts') el.innerHTML=renderContacts();
+  else if(currentTab==='listings') el.innerHTML=renderListings();
+  else if(currentTab==='deals') el.innerHTML=renderDeals();
+  else if(currentTab==='travel') el.innerHTML=renderTravel();
+}
+
+/* ── DASHBOARD ── */
+function renderDashboard(){
+  const today=new Date().toISOString().slice(0,10);
+  const active=cache.listings.filter(l=>l.status==='Active').length;
+  const uc=cache.deals.filter(d=>d.stage==='Under Contract').length;
+  const closed=cache.deals.filter(d=>d.stage==='Closed').length;
+  const upcoming=cache.travel.filter(t=>t.arrival>=today).length;
+  const cm=Object.fromEntries(cache.contacts.map(c=>[c.id,c]));
+  const lm=Object.fromEntries(cache.listings.map(l=>[l.id,l]));
+  const clist=cache.deals.filter(d=>d.closingDate&&d.closingDate>=today&&d.stage!=='Closed').sort((a,b)=>a.closingDate.localeCompare(b.closingDate)).slice(0,5);
+  const tlist=cache.travel.filter(t=>t.arrival>=today).sort((a,b)=>a.arrival.localeCompare(b.arrival)).slice(0,5);
+  return `
+  <div class="stats-grid">
+    <div class="stat-card accent"><div class="stat-label">Total Contacts</div><div class="stat-value">${cache.contacts.length}</div><div class="stat-sub">All leads & clients</div></div>
+    <div class="stat-card"><div class="stat-label">Active Listings</div><div class="stat-value">${active}</div><div class="stat-sub">On market now</div></div>
+    <div class="stat-card"><div class="stat-label">Under Contract</div><div class="stat-value">${uc}</div><div class="stat-sub">In progress</div></div>
+    <div class="stat-card"><div class="stat-label">Closed Deals</div><div class="stat-value">${closed}</div><div class="stat-sub">Completed sales</div></div>
+    <div class="stat-card"><div class="stat-label">Upcoming Visits</div><div class="stat-value">${upcoming}</div><div class="stat-sub">Travel scheduled</div></div>
+  </div>
+  <div class="dash-grid">
+    <div>
+      <div class="dash-section-title"><i class="ti ti-calendar-event"></i> Upcoming Closings</div>
+      ${clist.length?clist.map(d=>`<div class="event-card">
+        <div class="event-card-dot gold"></div>
+        <div><div class="event-card-name">${esc(lm[d.listingId]?.title||'Unknown listing')}</div>
+        <div class="event-card-sub">${esc(cm[d.contactId]?.name||'—')} &nbsp;·&nbsp; Close: <strong>${d.closingDate}</strong>${d.offerPrice?` &nbsp;·&nbsp; $${Number(d.offerPrice).toLocaleString()}`:''}
+        </div></div></div>`).join(''):`<div class="empty"><i class="ti ti-calendar-off"></i><div class="empty-title">No upcoming closings</div></div>`}
+    </div>
+    <div>
+      <div class="dash-section-title"><i class="ti ti-plane-arrival"></i> Upcoming Client Visits</div>
+      ${tlist.length?tlist.map(t=>`<div class="event-card">
+        <div class="event-card-dot"></div>
+        <div><div class="event-card-name">${esc(cm[t.contactId]?.name||'Unknown contact')}</div>
+        <div class="event-card-sub">Arrive <strong>${t.arrival}</strong> → Depart ${t.departure}${t.accommodation?` &nbsp;·&nbsp; ${esc(t.accommodation)}`:''}
+        </div></div></div>`).join(''):`<div class="empty"><i class="ti ti-plane-off"></i><div class="empty-title">No visits scheduled</div></div>`}
+    </div>
+  </div>`;
+}
+
+/* ── CONTACTS ── */
+function renderContacts(){
+  const q=searchQ.toLowerCase();
+  const data=q?cache.contacts.filter(c=>(c.name+c.email+c.country+c.source).toLowerCase().includes(q)):cache.contacts;
+  return `
+  <div class="section-header">
+    <div><span class="section-title">Contacts</span><span class="section-count">${cache.contacts.length} total</span></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="search-wrap"><i class="ti ti-search"></i><input placeholder="Search contacts..." value="${esc(searchQ)}" oninput="searchQ=this.value;render()"/></div>
+      <button class="btn btn-primary btn-sm" onclick="openModal('contact')"><i class="ti ti-plus"></i> Add Contact</button>
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-wrap"><table>
+      <thead><tr><th style="width:22%">Name</th><th style="width:22%">Email</th><th style="width:15%">Phone</th><th style="width:11%">Country</th><th style="width:13%">Source</th><th style="width:17%">Actions</th></tr></thead>
+      <tbody>${data.length?data.map(c=>`<tr>
+        <td><div class="cell-primary">${esc(c.name)}</div><div class="cell-sub">${c.created||''}</div></td>
+        <td style="color:var(--info)">${esc(c.email)||'—'}</td>
+        <td>${esc(c.phone)||'—'}</td>
+        <td><span class="badge badge-blue">${esc(c.country)||'—'}</span></td>
+        <td><span class="badge badge-gray">${esc(c.source)||'—'}</span></td>
+        <td><div class="actions">
+          <button class="btn btn-sm btn-icon" onclick="openModal('contact','${c.id}')" title="Edit"><i class="ti ti-edit"></i></button>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="delRec('contacts','${c.id}')" title="Delete"><i class="ti ti-trash"></i></button>
+        </div></td>
+      </tr>`).join(''):`<tr><td colspan="6"><div class="empty"><i class="ti ti-users"></i><div class="empty-title">No contacts yet</div>Add your first lead to get started</div></td></tr>`}</tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ── LISTINGS ── */
+function renderListings(){
+  const q=searchQ.toLowerCase();
+  const data=q?cache.listings.filter(l=>(l.title+l.location+l.type+l.status).toLowerCase().includes(q)):cache.listings;
+  const sb=s=>s==='Active'?'badge-green':s==='Under Contract'?'badge-gold':s==='Sold'?'badge-blue':'badge-gray';
+  return `
+  <div class="section-header">
+    <div><span class="section-title">Listings</span><span class="section-count">${cache.listings.length} properties</span></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div class="search-wrap"><i class="ti ti-search"></i><input placeholder="Search listings..." value="${esc(searchQ)}" oninput="searchQ=this.value;render()"/></div>
+      <button class="btn btn-primary btn-sm" onclick="openModal('listing')"><i class="ti ti-plus"></i> Add Listing</button>
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-wrap"><table>
+      <thead><tr><th style="width:22%">Property</th><th style="width:18%">Location</th><th style="width:9%">Type</th><th style="width:11%">Beds/Bath</th><th style="width:12%">Price</th><th style="width:12%">Status</th><th style="width:16%">Actions</th></tr></thead>
+      <tbody>${data.length?data.map(l=>`<tr>
+        <td><div class="cell-primary">${esc(l.title)}</div>${l.description?`<div class="cell-sub">${esc(l.description.slice(0,50))}</div>`:''}</td>
+        <td>${esc(l.location)||'—'}</td>
+        <td>${esc(l.type)||'—'}</td>
+        <td>${l.bedrooms?`${l.bedrooms}BR / ${l.bathrooms}BA`:'—'}</td>
+        <td><strong>$${Number(l.price||0).toLocaleString()}</strong></td>
+        <td><span class="badge ${sb(l.status)}">${esc(l.status)||'—'}</span></td>
+        <td><div class="actions">
+          <button class="btn btn-sm btn-icon" onclick="openModal('listing','${l.id}')" title="Edit"><i class="ti ti-edit"></i></button>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="delRec('listings','${l.id}')" title="Delete"><i class="ti ti-trash"></i></button>
+        </div></td>
+      </tr>`).join(''):`<tr><td colspan="7"><div class="empty"><i class="ti ti-home"></i><div class="empty-title">No listings yet</div>Add your first property</div></td></tr>`}</tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ── DEALS ── */
+function renderDeals(){
+  const stages=['Lead','Showing','Offer Made','Under Contract','Closed','Dead'];
+  const cm=Object.fromEntries(cache.contacts.map(c=>[c.id,c]));
+  const lm=Object.fromEntries(cache.listings.map(l=>[l.id,l]));
+  const sb=s=>({Lead:'badge-gray',Showing:'badge-blue','Offer Made':'badge-gold','Under Contract':'badge-gold',Closed:'badge-green',Dead:'badge-red'}[s]||'badge-gray');
+  return `
+  <div class="section-header">
+    <div><span class="section-title">Pipeline</span><span class="section-count">${cache.deals.length} deals</span></div>
+    <button class="btn btn-primary btn-sm" onclick="openModal('deal')"><i class="ti ti-plus"></i> Add Deal</button>
+  </div>
+  <div class="pipeline-board-wrap">
+    <div class="pipeline-board">
+      ${stages.map(s=>{
+        const items=cache.deals.filter(d=>d.stage===s);
+        return `<div class="pcol">
+          <div class="pcol-header">${s}<span class="pcol-count">${items.length}</span></div>
+          ${items.map(d=>`<div class="pcard">
+            <div class="pcard-name">${esc(lm[d.listingId]?.title||'—')}</div>
+            <div class="pcard-sub">${esc(cm[d.contactId]?.name||'—')}${d.offerPrice?`<br>$${Number(d.offerPrice).toLocaleString()}`:''}
+            </div></div>`).join('')}
+        </div>`;}).join('')}
+    </div>
+  </div>
+  <div class="table-card">
+    <div class="table-wrap"><table>
+      <thead><tr><th style="width:17%">Contact</th><th style="width:17%">Property</th><th style="width:13%">Stage</th><th style="width:12%">Offer Date</th><th style="width:12%">Contract</th><th style="width:12%">Closing</th><th style="width:10%">Price</th><th style="width:7%">Edit</th></tr></thead>
+      <tbody>${cache.deals.length?cache.deals.map(d=>`<tr>
+        <td>${esc(cm[d.contactId]?.name||'—')}</td>
+        <td>${esc(lm[d.listingId]?.title||'—')}</td>
+        <td><span class="badge ${sb(d.stage)}">${d.stage}</span></td>
+        <td>${d.offerDate||'—'}</td><td>${d.contractDate||'—'}</td><td>${d.closingDate||'—'}</td>
+        <td>${d.offerPrice?'$'+Number(d.offerPrice).toLocaleString():'—'}</td>
+        <td><div class="actions">
+          <button class="btn btn-sm btn-icon" onclick="openModal('deal','${d.id}')"><i class="ti ti-edit"></i></button>
+          <button class="btn btn-sm btn-icon btn-danger" onclick="delRec('deals','${d.id}')"><i class="ti ti-trash"></i></button>
+        </div></td>
+      </tr>`).join(''):`<tr><td colspan="8"><div class="empty"><i class="ti ti-file-off"></i><div class="empty-title">No deals yet</div></div></td></tr>`}</tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ── TRAVEL ── */
+function renderTravel(){
+  const today=new Date().toISOString().slice(0,10);
+  const cm=Object.fromEntries(cache.contacts.map(c=>[c.id,c]));
+  const lm=Object.fromEntries(cache.listings.map(l=>[l.id,l]));
+  const sorted=[...cache.travel].sort((a,b)=>a.arrival.localeCompare(b.arrival));
+  return `
+  <div class="section-header">
+    <div><span class="section-title">Travel & Showings</span><span class="section-count">${cache.travel.length} visits</span></div>
+    <button class="btn btn-primary btn-sm" onclick="openModal('travel')"><i class="ti ti-plus"></i> Add Visit</button>
+  </div>
+  <div class="table-card">
+    <div class="table-wrap"><table>
+      <thead><tr><th style="width:20%">Contact</th><th style="width:12%">Arrival</th><th style="width:12%">Departure</th><th style="width:17%">Accommodation</th><th style="width:21%">Showings</th><th style="width:12%">Status</th><th style="width:6%">Edit</th></tr></thead>
+      <tbody>${sorted.length?sorted.map(t=>{
+        const pa=t.departure<today,ac=t.arrival<=today&&t.departure>=today;
+        const shows=(Array.isArray(t.showings)?t.showings:[]).map(id=>lm[id]?.title||id).filter(Boolean).join(', ');
+        return `<tr>
+          <td><div class="cell-primary">${esc(cm[t.contactId]?.name||'—')}</div></td>
+          <td>${t.arrival||'—'}</td><td>${t.departure||'—'}</td>
+          <td>${esc(t.accommodation)||'—'}</td>
+          <td style="font-size:12px">${esc(shows)||'—'}</td>
+          <td><span class="badge ${ac?'badge-green':pa?'badge-gray':'badge-gold'}">${ac?'In Country':pa?'Past':'Upcoming'}</span></td>
+          <td><div class="actions">
+            <button class="btn btn-sm btn-icon" onclick="openModal('travel','${t.id}')"><i class="ti ti-edit"></i></button>
+            <button class="btn btn-sm btn-icon btn-danger" onclick="delRec('travel','${t.id}')"><i class="ti ti-trash"></i></button>
+          </div></td>
+        </tr>`;}).join(''):`<tr><td colspan="7"><div class="empty"><i class="ti ti-plane"></i><div class="empty-title">No travel scheduled</div></div></td></tr>`}</tbody>
+    </table></div>
+  </div>`;
+}
+
+/* ── MODALS ── */
+function openModal(type, id){
+  const mc=document.getElementById('modal-container');
+  const arr={contact:cache.contacts,listing:cache.listings,deal:cache.deals,travel:cache.travel}[type];
+  const c=id?arr.find(r=>r.id===id):null;
+
+  if(type==='contact'){
+    mc.innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeMo()"><div class="modal">
+      <div class="modal-header"><h2>${c?'Edit Contact':'New Contact'}</h2><button class="btn btn-sm btn-icon" onclick="closeMo()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body"><div class="form-grid">
+        <div class="form-group full"><label>Full Name *</label><input id="f-name" value="${esc(c?.name)}" placeholder="James Patterson"/></div>
+        <div class="form-group"><label>Email</label><input id="f-email" value="${esc(c?.email)}" placeholder="email@example.com"/></div>
+        <div class="form-group"><label>Phone</label><input id="f-phone" value="${esc(c?.phone)}" placeholder="+1 404-555-0000"/></div>
+        <div class="form-group"><label>Country</label><input id="f-country" value="${esc(c?.country)}" placeholder="USA"/></div>
+        <div class="form-group"><label>Lead Source</label><select id="f-source">${['YouTube','Dubai Outreach','Referral','Website','Instagram','Facebook','Other'].map(s=>`<option ${c?.source===s?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="form-group full"><label>Notes</label><textarea id="f-notes">${esc(c?.notes)}</textarea></div>
+      </div></div>
+      <div class="modal-footer"><button class="btn" onclick="closeMo()">Cancel</button><button class="btn btn-primary" onclick="saveRec('contact','${id||''}')"><i class="ti ti-check"></i> Save Contact</button></div>
+    </div></div>`;
+  } else if(type==='listing'){
+    mc.innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeMo()"><div class="modal">
+      <div class="modal-header"><h2>${c?'Edit Listing':'New Listing'}</h2><button class="btn btn-sm btn-icon" onclick="closeMo()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body"><div class="form-grid">
+        <div class="form-group full"><label>Property Title *</label><input id="f-title" value="${esc(c?.title)}" placeholder="Casa Miramar"/></div>
+        <div class="form-group"><label>Location</label><input id="f-location" value="${esc(c?.location)}" placeholder="Playa Tamarindo"/></div>
+        <div class="form-group"><label>Type</label><select id="f-type">${['House','Condo','Land','Commercial','Other'].map(s=>`<option ${c?.type===s?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Bedrooms</label><input id="f-bedrooms" type="number" value="${esc(c?.bedrooms)}"/></div>
+        <div class="form-group"><label>Bathrooms</label><input id="f-bathrooms" type="number" value="${esc(c?.bathrooms)}"/></div>
+        <div class="form-group"><label>Price (USD)</label><input id="f-price" type="number" value="${esc(c?.price)}"/></div>
+        <div class="form-group"><label>Status</label><select id="f-status">${['Active','Under Contract','Sold','Off Market'].map(s=>`<option ${c?.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="form-group full"><label>Description</label><textarea id="f-description">${esc(c?.description)}</textarea></div>
+        <div class="form-group full"><label>Listing URL</label><input id="f-link" value="${esc(c?.link)}" placeholder="https://..."/></div>
+      </div></div>
+      <div class="modal-footer"><button class="btn" onclick="closeMo()">Cancel</button><button class="btn btn-primary" onclick="saveRec('listing','${id||''}')"><i class="ti ti-check"></i> Save Listing</button></div>
+    </div></div>`;
+  } else if(type==='deal'){
+    const stages=['Lead','Showing','Offer Made','Under Contract','Closed','Dead'];
+    mc.innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeMo()"><div class="modal">
+      <div class="modal-header"><h2>${c?'Edit Deal':'New Deal'}</h2><button class="btn btn-sm btn-icon" onclick="closeMo()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body"><div class="form-grid">
+        <div class="form-group"><label>Contact *</label><select id="f-contact"><option value="">-- Select --</option>${cache.contacts.map(ct=>`<option value="${ct.id}" ${c?.contactId===ct.id?'selected':''}>${esc(ct.name)}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Listing *</label><select id="f-listing"><option value="">-- Select --</option>${cache.listings.map(l=>`<option value="${l.id}" ${c?.listingId===l.id?'selected':''}>${esc(l.title)}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Stage</label><select id="f-stage">${stages.map(s=>`<option ${c?.stage===s?'selected':''}>${s}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Offer Price (USD)</label><input id="f-offer-price" type="number" value="${esc(c?.offerPrice)}"/></div>
+        <div class="form-group"><label>Offer Date</label><input id="f-offer-date" type="date" value="${esc(c?.offerDate)}"/></div>
+        <div class="form-group"><label>Contract Date</label><input id="f-contract-date" type="date" value="${esc(c?.contractDate)}"/></div>
+        <div class="form-group full"><label>Closing Date</label><input id="f-closing-date" type="date" value="${esc(c?.closingDate)}"/></div>
+        <div class="form-group full"><label>Notes</label><textarea id="f-notes">${esc(c?.notes)}</textarea></div>
+      </div></div>
+      <div class="modal-footer"><button class="btn" onclick="closeMo()">Cancel</button><button class="btn btn-primary" onclick="saveRec('deal','${id||''}')"><i class="ti ti-check"></i> Save Deal</button></div>
+    </div></div>`;
+  } else if(type==='travel'){
+    const checks=cache.listings.map(l=>`<label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:8px;cursor:pointer"><input type="checkbox" value="${l.id}" ${(Array.isArray(c?.showings)?c.showings:[]).includes(l.id)?'checked':''} class="sc-chk"> ${esc(l.title)}${l.location?' — '+esc(l.location):''}</label>`).join('');
+    mc.innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)closeMo()"><div class="modal">
+      <div class="modal-header"><h2>${c?'Edit Visit':'New Client Visit'}</h2><button class="btn btn-sm btn-icon" onclick="closeMo()"><i class="ti ti-x"></i></button></div>
+      <div class="modal-body"><div class="form-grid">
+        <div class="form-group full"><label>Contact *</label><select id="f-contact"><option value="">-- Select --</option>${cache.contacts.map(ct=>`<option value="${ct.id}" ${c?.contactId===ct.id?'selected':''}>${esc(ct.name)}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Arrival Date</label><input id="f-arrival" type="date" value="${esc(c?.arrival)}"/></div>
+        <div class="form-group"><label>Departure Date</label><input id="f-departure" type="date" value="${esc(c?.departure)}"/></div>
+        <div class="form-group full"><label>Accommodation</label><input id="f-accommodation" value="${esc(c?.accommodation)}" placeholder="Tamarindo Diria Hotel"/></div>
+        <div class="form-group full"><label>Properties to Show</label><div style="margin-top:6px">${checks||'<span style="font-size:13px;color:var(--muted)">Add listings first</span>'}</div></div>
+        <div class="form-group full"><label>Notes</label><textarea id="f-notes">${esc(c?.notes)}</textarea></div>
+      </div></div>
+      <div class="modal-footer"><button class="btn" onclick="closeMo()">Cancel</button><button class="btn btn-primary" onclick="saveRec('travel','${id||''}')"><i class="ti ti-check"></i> Save Visit</button></div>
+    </div></div>`;
+  }
+}
+
+function closeMo(){ document.getElementById('modal-container').innerHTML=''; }
+
+async function saveRec(type, id){
+  let rec={};
+  const isNew=!id;
+  const sheet={contact:'contacts',listing:'listings',deal:'deals',travel:'travel'}[type];
+  const arr={contact:cache.contacts,listing:cache.listings,deal:cache.deals,travel:cache.travel}[type];
+
+  if(type==='contact'){
+    const name=document.getElementById('f-name').value.trim();
+    if(!name) return toast('Name is required','error');
+    const ex=id?arr.find(r=>r.id===id):null;
+    rec={id:id||uid(),name,email:document.getElementById('f-email').value.trim(),phone:document.getElementById('f-phone').value.trim(),country:document.getElementById('f-country').value.trim(),source:document.getElementById('f-source').value,notes:document.getElementById('f-notes').value.trim(),created:ex?.created||new Date().toISOString().slice(0,10)};
+  } else if(type==='listing'){
+    const title=document.getElementById('f-title').value.trim();
+    if(!title) return toast('Title is required','error');
+    rec={id:id||uid(),title,location:document.getElementById('f-location').value.trim(),type:document.getElementById('f-type').value,bedrooms:document.getElementById('f-bedrooms').value,bathrooms:document.getElementById('f-bathrooms').value,price:document.getElementById('f-price').value,status:document.getElementById('f-status').value,description:document.getElementById('f-description').value.trim(),link:document.getElementById('f-link').value.trim()};
+  } else if(type==='deal'){
+    const contactId=document.getElementById('f-contact').value,listingId=document.getElementById('f-listing').value;
+    if(!contactId||!listingId) return toast('Contact and listing required','error');
+    const ex=id?arr.find(r=>r.id===id):null;
+    rec={id:id||uid(),contactId,listingId,stage:document.getElementById('f-stage').value,offerPrice:document.getElementById('f-offer-price').value,offerDate:document.getElementById('f-offer-date').value,contractDate:document.getElementById('f-contract-date').value,closingDate:document.getElementById('f-closing-date').value,notes:document.getElementById('f-notes').value.trim(),created:ex?.created||new Date().toISOString().slice(0,10)};
+  } else if(type==='travel'){
+    const contactId=document.getElementById('f-contact').value;
+    if(!contactId) return toast('Contact required','error');
+    const showings=Array.from(document.querySelectorAll('.sc-chk:checked')).map(el=>el.value);
+    const ex=id?arr.find(r=>r.id===id):null;
+    rec={id:id||uid(),contactId,arrival:document.getElementById('f-arrival').value,departure:document.getElementById('f-departure').value,accommodation:document.getElementById('f-accommodation').value.trim(),showings,notes:document.getElementById('f-notes').value.trim(),created:ex?.created||new Date().toISOString().slice(0,10)};
+  }
+
+  closeMo(); setSyncing(true); toast('Saving...','info');
+  try {
+    if(isNew){ await apiPost({action:'append',sheet,record:rec}); cache[sheet].push(rec); }
+    else { await apiPost({action:'update',sheet,record:rec}); cache[sheet]=cache[sheet].map(r=>r.id===id?rec:r); }
+    updateBadges(); toast('Saved successfully');
+  } catch(e){ toast('Save failed: '+e.message,'error'); }
+  setSyncing(false); render();
+}
+
+async function delRec(sheet, id){
+  if(!confirm('Delete this record? This cannot be undone.')) return;
+  setSyncing(true); toast('Deleting...','info');
+  try {
+    await apiPost({action:'delete',sheet,id});
+    cache[sheet]=cache[sheet].filter(r=>r.id!==id);
+    updateBadges(); toast('Record deleted');
+  } catch(e){ toast('Delete failed: '+e.message,'error'); }
+  setSyncing(false); render();
+}
+
+// Boot
+loadAll();
+</script>
+</body>
+</html>
